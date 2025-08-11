@@ -83,12 +83,16 @@ export const authOptions: NextAuthOptions = {
       }
 
       // Save session data in Redis with session token as key
-      if (session?.user?.email) {
-        // Use email as a unique session key or get sessionToken from somewhere appropriate
-        // Here we assume token.sub as a session token identifier
-        const sessionToken = token.sub || session.user.email;
-        await sessionStore.set(sessionToken, sessionData);
-      }
+      // if (session?.user?.email) {
+      //   // Use email as a unique session key or get sessionToken from somewhere appropriate
+      //   // Here we assume token.sub as a session token identifier
+      //   const sessionToken = token.sub || session.user.email;
+      //   await sessionStore.set(sessionToken, sessionData);
+      // }
+
+      const sessionToken = token.sub; // Always use sub
+if (!sessionToken) throw new Error('No sub claim in token');
+await sessionStore.set(sessionToken, sessionData);
 
       return sessionData;
     },
